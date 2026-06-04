@@ -4,7 +4,7 @@ from config import Config
 
 class Conexion:
     def __init__(self):
-        self.dblink = dbc.connect(
+        kwargs = dict(
             host=Config.DB_HOST,
             user=Config.DB_USER,
             passwd=Config.DB_PASSWORD,
@@ -12,6 +12,13 @@ class Conexion:
             port=Config.DB_PORT,
             cursorclass=dbc.cursors.DictCursor
         )
+
+        # Proveedores como Aiven o TiDB exigen conexion cifrada (TLS).
+        # ssl_mode='REQUIRED' cifra la conexion sin requerir el certificado CA.
+        if Config.DB_SSL:
+            kwargs['ssl_mode'] = 'REQUIRED'
+
+        self.dblink = dbc.connect(**kwargs)
 
     @property
     def open(self):

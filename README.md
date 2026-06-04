@@ -8,8 +8,10 @@ especialidades y citas) con autenticación JWT y MySQL.
 ```
 medicalapp_api/
 ├── app.py                 # Punto de entrada Flask (registra los blueprints)
-├── conexionBD.py          # Conexión a MySQL
-├── config.example.py      # Plantilla de configuración (copiar a config.py)
+├── conexionBD.py          # Conexión a MySQL (SSL opcional)
+├── config.py              # Configuración por variables de entorno
+├── .env.example           # Plantilla de variables de entorno (copiar a .env)
+├── Procfile               # Arranque en la nube (gunicorn)
 ├── requirements.txt       # Dependencias
 ├── medical_app_db.sql     # Esquema + datos de prueba (phpMyAdmin / MySQL)
 ├── models/                # Lógica de acceso a datos
@@ -22,8 +24,8 @@ medicalapp_api/
 
 ```bash
 pip install -r requirements.txt
-cp config.example.py config.py      # y editar con tus datos de MySQL local
-python app.py                       # corre en http://127.0.0.1:3007
+cp .env.example .env                 # y editar con tus datos de MySQL local
+python app.py                        # corre en http://127.0.0.1:3007
 ```
 
 Importar `medical_app_db.sql` desde phpMyAdmin para crear la base de datos
@@ -34,13 +36,19 @@ Importar `medical_app_db.sql` desde phpMyAdmin para crear la base de datos
 - `ana.torres@gmail.com` (paciente)
 - `maria.lopez@clinica.com`, `jose.rivera@clinica.com`, ... (médicos)
 
-## Despliegue en PythonAnywhere
+## Despliegue en la nube (Railway / Render)
 
-1. `git clone https://github.com/jomaguevco/medicalapp_api.git`
-2. Crear la base de datos `<usuario>$medical_app_db` en la pestaña **Databases**.
-3. Importar `medical_app_db.sql` (quitando las líneas `CREATE DATABASE` / `USE`).
-4. `cp config.example.py config.py` y configurar la sección **PythonAnywhere**.
-5. Crear la Web app (Flask manual), virtualenv con `requirements.txt` y apuntar
-   el WSGI a `app.py` (variable `application = app`).
+La app está lista para cualquier PaaS: usa `gunicorn` (ver `Procfile`) y toma
+toda su configuración de **variables de entorno** (las mismas de `.env.example`).
 
-La API quedará disponible en `https://<usuario>.pythonanywhere.com/api/`.
+Pasos generales:
+1. Conectar el repo de GitHub al hosting.
+2. Crear/usar una base de datos MySQL y cargar `medical_app_db.sql`.
+3. Definir las variables de entorno (`DB_HOST`, `DB_USER`, `DB_PASSWORD`,
+   `DB_NAME`, `DB_PORT`, `DB_SSL`, `SECRET_KEY`).
+   - Railway (MySQL interno): `DB_SSL=false`
+   - Aiven / TiDB (MySQL externo): `DB_SSL=true`
+4. Start command: `gunicorn app:app --bind 0.0.0.0:$PORT`
+
+> Nota: PythonAnywhere **gratuito** no sirve para esto: no incluye MySQL ni
+> permite conexiones MySQL salientes a hosts externos.

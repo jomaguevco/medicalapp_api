@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from routes.usuario import ws_usuario
 from routes.especialidad import ws_especialidad
@@ -15,6 +16,8 @@ def home():
     return 'MedicalApp - Running API Restful'
 
 
-#Iniciar el servicio web con Flask
+#Iniciar el servicio web con Flask (solo para ejecucion local).
+#En produccion lo arranca gunicorn (ver Procfile).
 if __name__ == '__main__':
-    app.run(port=3007, debug=True, host='0.0.0.0')
+    puerto = int(os.environ.get('PORT', 3007))
+    app.run(port=puerto, debug=True, host='0.0.0.0')

@@ -9,9 +9,9 @@ __pycache__/
 venv/
 env/
 
-# Configuracion con credenciales (NO subir).
-# Usar config.example.py como plantilla.
-config.py
+# Variables de entorno con credenciales (NO subir).
+# Usar .env.example como plantilla.
+.env
 
 # Editores / SO
 .idea/
