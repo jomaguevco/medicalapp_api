@@ -10,7 +10,11 @@ class Conexion:
             passwd=Config.DB_PASSWORD,
             db=Config.DB_NAME,
             port=Config.DB_PORT,
-            cursorclass=dbc.cursors.DictCursor
+            cursorclass=dbc.cursors.DictCursor,
+            # Forzar UTF-8 para que los acentos y la ñ se lean/escriban bien
+            # (sin esto, "Pediatría" se ve como "PediatrÃ­a").
+            charset='utf8mb4',
+            use_unicode=True
         )
 
         # Proveedores como Aiven o TiDB exigen conexion cifrada (TLS).
