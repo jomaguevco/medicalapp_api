@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Configuracion con credenciales (NO subir).
+# Usar config.example.py como plantilla.
+config.py
+
+# Editores / SO
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
