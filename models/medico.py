@@ -92,7 +92,7 @@ class Medico:
         else: #No se encontró la imagen
             return None
 
-    def registrar(self, email, password, nombres, apellidos, dni, cmp, telefono, consultorio, especialidad_id):
+    def registrar(self, email, password, nombres, apellidos, dni, cmp, telefono,horario, consultorio, especialidad_id):
         """Registrar nuevo médico."""
         try:
             con = Conexion().open
@@ -124,8 +124,8 @@ class Medico:
             usuario_id = cursor.lastrowid
             
             cursor.execute(
-                "INSERT INTO medico (usuario_id, nombres, apellidos, dni, cmp, telefono, consultorio) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                [usuario_id, nombres, apellidos, dni, cmp, telefono, consultorio]
+                "INSERT INTO medico (usuario_id, nombres, apellidos, dni, cmp, telefono,horario, consultorio) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)",
+                [usuario_id, nombres, apellidos, dni, cmp, telefono,horario, consultorio]
             )
             medico_id = cursor.lastrowid
             
