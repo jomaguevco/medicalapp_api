@@ -26,7 +26,7 @@ def registrar_medico():
         consultorio = data.get('consultorio')
         estado_medico_id = data.get('estado_medico_id')
         
-        if not all([email, password, nombres, apellidos, dni, cmp, estado_medico_id]):
+        if not all([email, password, nombres, apellidos, dni, cmp,telefono,especialidad,consultorio, estado_medico_id]):
             return jsonify({'status': False, 'data': None, 'message': 'Faltan datos obligatorios'}), 400
         
         exitoso, resultado = medico.registrar(email, password, nombres, apellidos, dni, cmp, telefono, consultorio, especialidad_id, estado_medico_id)
