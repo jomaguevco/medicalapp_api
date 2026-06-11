@@ -7,6 +7,38 @@ ws_medico = Blueprint('ws_medico', __name__)
 
 medico = Medico()
 
+# ===================== REGISTRAR MÉDICO =====================
+@ws_medico.route('/medicos', methods=['POST'])
+@jwt_token_requerido
+def registrar_medico():
+    """Registrar nuevo médico."""
+    try:
+        data = request.get_json()
+        
+        email = data.get('email')
+        password = data.get('password')
+        nombres = data.get('nombres')
+        apellidos = data.get('apellidos')
+        dni = data.get('dni')
+        cmp = data.get('cmp')
+        telefono = data.get('telefono')
+        especialidad_id = data.get('especialidad')
+        consultorio = data.get('consultorio')
+        estado_medico_id = data.get('estado_medico_id')
+        
+        if not all([email, password, nombres, apellidos, dni, cmp, estado_medico_id]):
+            return jsonify({'status': False, 'data': None, 'message': 'Faltan datos obligatorios'}), 400
+        
+        exitoso, resultado = medico.registrar(email, password, nombres, apellidos, dni, cmp, telefono, consultorio, especialidad_id, estado_medico_id)
+        
+        if exitoso:
+            return jsonify({'status': True, 'data': resultado, 'message': 'Médico registrado correctamente'}), 201
+        else:
+            return jsonify({'status': False, 'data': None, 'message': resultado}), 400
+            
+    except Exception as e:
+        return jsonify({'status': False, 'data': None, 'message': str(e)}), 500
+
 # M.1 Listar médicos
 @ws_medico.route('/medicos', methods=["GET"])
 @jwt_token_requerido

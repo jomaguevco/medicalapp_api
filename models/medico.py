@@ -91,3 +91,54 @@ class Medico:
             return resultado
         else: #No se encontró la imagen
             return None
+
+    def registrar(self, email, password, nombres, apellidos, dni, cmp, telefono, consultorio, especialidad_id, estado_medico_id):
+        """Registrar nuevo médico."""
+        try:
+            con = Conexion().open
+            cursor = con.cursor()
+            
+            cursor.execute("SELECT id FROM usuario WHERE email = %s", [email])
+            if cursor.fetchone():
+                cursor.close()
+                con.close()
+                return False, "El email ya está registrado"
+            
+            cursor.execute("SELECT id FROM medico WHERE dni = %s", [dni])
+            if cursor.fetchone():
+                cursor.close()
+                con.close()
+                return False, "El DNI ya está registrado"
+            
+            cursor.execute("SELECT id FROM medico WHERE cmp = %s", [cmp])
+            if cursor.fetchone():
+                cursor.close()
+                con.close()
+                return False, "El CMP ya está registrado"
+            
+            password_hash = hash_password(password)
+            cursor.execute(
+                "INSERT INTO usuario (email, password, rol_id, estado_usuario_id) VALUES (%s, %s, 2, 1)",
+                [email, password_hash]
+            )
+            usuario_id = cursor.lastrowid
+            
+            cursor.execute(
+                "INSERT INTO medico (usuario_id, nombres, apellidos, dni, cmp, telefono, consultorio, estado_medico_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                [usuario_id, nombres, apellidos, dni, cmp, telefono, consultorio, estado_medico_id]
+            )
+            medico_id = cursor.lastrowid
+            
+            cursor.execute(
+                "INSERT INTO medico_especialidad (medico_id, especialidad_id) VALUES (%s %s)",
+                [medico_id,especialidad_id]
+            )
+
+            con.commit()
+            cursor.close()
+            con.close()
+            
+            return True, {"usuario_id": usuario_id, "medico_id": medico_id, "email": email}
+        except Exception as e:
+            print(f"Error en registrar médico: {e}")
+            return False, str(e)
