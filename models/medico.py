@@ -1,4 +1,5 @@
 from conexionBD import Conexion
+from tools.security import hash_password
 
 class Medico:
     def __init__(self, id=None):
@@ -124,14 +125,14 @@ class Medico:
             usuario_id = cursor.lastrowid
             
             cursor.execute(
-                "INSERT INTO medico (usuario_id, nombres, apellidos, dni, cmp, telefono,horario, consultorio) VALUES (%s,%s, %s, %s, %s, %s, %s, %s)",
-                [usuario_id, nombres, apellidos, dni, cmp, telefono,horario, consultorio]
+                "INSERT INTO medico (usuario_id, nombres, apellidos, dni, cmp, telefono, horario, consultorio, estado_medico_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 1)",
+                [usuario_id, nombres, apellidos, dni, cmp, telefono, horario, consultorio]
             )
             medico_id = cursor.lastrowid
-            
+
             cursor.execute(
-                "INSERT INTO medico_especialidad (medico_id, especialidad_id) VALUES (%s %s)",
-                [medico_id,especialidad_id]
+                "INSERT INTO medico_especialidad (medico_id, especialidad_id) VALUES (%s, %s)",
+                [medico_id, especialidad_id]
             )
 
             con.commit()
