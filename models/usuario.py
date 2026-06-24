@@ -15,8 +15,9 @@ class Usuario:
         
         #Definir la sentencia SQL
         sql = """
-           SELECT 
+           SELECT
                 u.id AS usuario_id,
+                p.id AS paciente_id,
                 u.email,
                 r.nombre AS rol,
                 eu.nombre AS estado_usuario,

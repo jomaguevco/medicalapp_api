@@ -50,6 +50,9 @@ class HorarioDisponible:
             WHERE me.especialidad_id = %s
               AND LOWER(ehd.nombre) = 'disponible'
               AND LOWER(em.nombre) = 'activo'
+              -- No mostrar horarios cuya fecha/hora ya paso respecto al momento actual.
+              -- TIMESTAMP(fecha, hora_inicio) combina fecha + hora y se compara con NOW().
+              AND TIMESTAMP(hd.fecha, hd.hora_inicio) > NOW()
         """
 
         params = [especialidad_id]
