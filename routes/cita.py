@@ -8,6 +8,39 @@ ws_cita = Blueprint('ws_cita', __name__)
 # Instanciar modelo
 modelo = Cita()
 
+# Endpoint para listar las citas de un paciente ("Mis citas")
+@ws_cita.route('/citas', methods=['GET'])
+@jwt_token_requerido
+def listar():
+    # Si se envía paciente_id por query string se usa; si no, se resuelve a
+    # partir del usuario autenticado (sus propias citas).
+    paciente_id = request.args.get("paciente_id")
+
+    if not paciente_id:
+        usuario_id = getattr(request, "usuario_id", None)
+        paciente_id = modelo.paciente_id_de_usuario(usuario_id)
+
+    if not paciente_id:
+        return jsonify({
+            'status': False,
+            'data': None,
+            'message': 'No se pudo determinar el paciente'
+        }), 400
+
+    try:
+        resultado = modelo.listar_por_paciente(paciente_id)
+        return jsonify({
+            'status': True,
+            'data': resultado,
+            'message': 'Citas obtenidas correctamente'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': False,
+            'data': None,
+            'message': str(e)
+        }), 500
+
 # Endpoint para registrar una o varias citas
 @ws_cita.route('/citas', methods=['POST'])
 @jwt_token_requerido
